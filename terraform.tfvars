@@ -1,13 +1,13 @@
 ## Application configurations
 account      = 000000
-region       = "us-east-1"
+region       = "eu-west-1"
 app_name     = "ecs-demo"
 env          = "dev"
 app_services = ["webapp", "customer", "transaction"]
 
 #VPC configurations
 cidr               = "10.10.0.0/16"
-availability_zones = ["us-east-1a", "us-east-1b"]
+availability_zones = ["eu-west-1a", "eu-west-1b"]
 public_subnets     = ["10.10.50.0/24", "10.10.51.0/24"]
 private_subnets    = ["10.10.0.0/24", "10.10.1.0/24"]
 
@@ -24,8 +24,8 @@ internal_alb_config = {
 
   ingress_rules = [
     {
-      from_port   = 80
-      to_port     = 3000
+      from_port   = 55101
+      to_port     = 55115
       protocol    = "tcp"
       cidr_blocks = ["10.10.0.0/16"]
     }
@@ -42,7 +42,7 @@ internal_alb_config = {
 }
 
 #Friendly url name for internal load balancer DNS
-internal_url_name = "service.internal"
+internal_url_name = "service.dev"
 
 #Public ALB configurations
 public_alb_config = {
@@ -91,16 +91,6 @@ microservice_config = {
       health_check_path = "/health"
       priority          = 1
     }
-    auto_scaling = {
-      max_capacity = 2
-      min_capacity = 1
-      cpu          = {
-        target_value = 75
-      }
-      memory = {
-        target_value = 75
-      }
-    }
   },
   "Customer" = {
     name             = "Customer"
@@ -116,42 +106,6 @@ microservice_config = {
       path_pattern      = ["/customer*"]
       health_check_path = "/health"
       priority          = 1
-    }
-    auto_scaling = {
-      max_capacity = 2
-      min_capacity = 1
-      cpu          = {
-        target_value = 75
-      }
-      memory = {
-        target_value = 75
-      }
-    }
-  },
-  "Transaction" = {
-    name             = "Transaction"
-    is_public        = false
-    container_port   = 3000
-    host_port        = 3000
-    cpu              = 256
-    memory           = 512
-    desired_count    = 1
-    alb_target_group = {
-      port              = 3000
-      protocol          = "HTTP"
-      path_pattern      = ["/transaction*"]
-      health_check_path = "/health"
-      priority          = 1
-    }
-    auto_scaling = {
-      max_capacity = 2
-      min_capacity = 1
-      cpu          = {
-        target_value = 75
-      }
-      memory = {
-        target_value = 75
-      }
     }
   }
 }
